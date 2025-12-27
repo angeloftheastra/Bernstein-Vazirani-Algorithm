@@ -1,0 +1,49 @@
+from qiskit import *
+from qiskit import QuantumCircuit
+from qiskit_aer import AerSimulator
+
+
+
+
+print("Add 2 binary numbers, they have to be same lenght")
+
+num1= str(input())
+num2 = str(input())
+
+
+circut = QuantumCircuit(len(num1) +len(num2) +2, len(num1) + len(num2) +2)
+circut.h(range(len(num1)))
+circut.h(range(len(num2)))
+circut.x(len(num1)+1)
+circut.h(len(num1)+1)
+circut.x(len(num1)+2)
+circut.h(len(num1)+2)
+
+circut.barrier()
+
+for index, one in enumerate(num1[::-1]):
+    print(f"{index} is {one}")
+    if one =="1":
+        circut.cx(index, len(num1))
+
+
+for index, one in enumerate(num2[::-1]):
+    print(f"{index} is {one}")
+    if one =="1":
+        circut.cx(index, len(num2))
+
+circut.barrier()
+circut.h(range(len(num1)))
+circut.h(range(len(num2)))
+circut.barrier()
+circut.measure(range(len(num1)), range(len(num1)))
+circut.measure(range(len(num2)), range(len(num2)))
+
+circut.draw(output='mpl')
+
+simulator = AerSimulator()
+
+job=simulator.run(circut, shots=1)
+result=job.result()
+counts = result.get_counts()
+print(counts)
