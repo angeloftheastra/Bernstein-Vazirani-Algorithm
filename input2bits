@@ -38,8 +38,17 @@ for index, one in enumerate(num2[::-1]):
 circut.barrier()
 circut.h(range(len(num1)+len(num2)))
 circut.barrier()
-circut.measure(range(len(num1)), range(len(num1)))
-circut.measure(range(len(num2)), range(len(num2)))
+circut.measure(range(len(num1)*2), range(len(num1)*2))
 
+
+
+
+
+simulator = AerSimulator()
+
+job=simulator.run(circut, shots=1)
+result=job.result()
+counts = result.get_counts()
+print(counts)
 
 circut.draw(output='mpl')
